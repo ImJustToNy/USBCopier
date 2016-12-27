@@ -83,8 +83,8 @@ function newDiskFound(disk) {
             //         date = exifData.image.ModifyDate.replace(' ', '_');
             // s('Zapisuje w ' + whereToSave + file);
 
-            pace.op();
             fs.createReadStream(imagesPath + file).pipe(fs.createWriteStream(whereToSave + file));
+            pace.op();
 
             //     }
             // });
