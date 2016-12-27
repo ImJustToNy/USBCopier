@@ -1,6 +1,8 @@
-var blockedNames = [
-    'PMHOME'
-];
+/*
+*   Name:     USB Coppier 
+*   Made by:  Antoni Siek [imtony@protonmail.com]
+*   Version:  1.0
+*/
 
 var whereToSave = '/Volumes/STORAGE/USBCopierDest/';
 
