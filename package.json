@@ -1,0 +1,13 @@
+{
+  "name": "USBCopier",
+  "version": "1.0.0",
+  "main": "app.js",
+  "author": "ToNy",
+  "license": "MIT",
+  "dependencies": {
+    "drivelist": "^5.0.4",
+    "exif": "^0.6.0",
+    "pace": "^0.0.4",
+    "usb": "^1.2.0"
+  }
+}
