@@ -4,14 +4,13 @@
 *   Version:  1.0
 */
 
-var whereToSave = '/Volumes/STORAGE/USBCopierDest/';
+var whereToSave = '/Volumes/STORAGE/USBCopierDest/',
+    whereToLook = '/DCIM/100MSDCF/';
 
 var usb       = require('usb'),
     drivelist = require('drivelist'),
     fs        = require('fs'),
     ExifImage = require('exif').ExifImage;
-
-// usb.setDebugLevel(4);
 
 function s() {
     for (var i = 0; i < arguments.length; i++) {
@@ -22,9 +21,9 @@ function s() {
 usb.on('attach', function(device) {
     var found = false;
 
-    s('Podłączono urządzenie!');
+    s('New device connected');
 
-    s('Wyszukiwanie nowych urządzeń...')
+    s('Looking for new devices...')
 
     setTimeout(function() {
         drivelist.list((error, drives) => {
@@ -41,26 +40,26 @@ usb.on('attach', function(device) {
             }
 
             if(!found) {
-                s('Nie odnaleziono żadnych nowych urządzeń!');
+                s('No new device found!');
             }
         });
     }, 3000);
 });
 
 function newDiskFound(disk) {
-    s('Znalazłem nowy dysk -> ' + disk.description);
-    s('Pojemność: ' + formatBytes(disk.size));
+    s('Found new device -> ' + disk.description);
+    s('Capacity: ' + formatBytes(disk.size));
     s('Mount point: ' + disk['mountpoints'][0].path);
 
-    var imagesPath = disk['mountpoints'][0].path + '/DCIM/100MSDCF/';
+    var imagesPath = disk['mountpoints'][0].path + whereToLook;
 
     if(!fs.existsSync(imagesPath)) {
-        s('Nie znaleziono folderu ze zdjęciami');
+        s('Source directory not found');
         return;
     }
 
     if (!fs.existsSync(whereToSave)) {
-        s('Nie znaleziono folderu docelowego');
+        s('Target directory not found');
         return;
     }
 
@@ -70,7 +69,7 @@ function newDiskFound(disk) {
 
     var diff = arr_diff(localImages, remoteImages);
 
-    s('Znalazłem ' + diff.length + ' plików do skopiowania');
+    s('Found ' + diff.length + ' files to copy');
 
     if(diff.length > 0) {
 
@@ -78,24 +77,17 @@ function newDiskFound(disk) {
          
         diff.forEach(file => {
 
-            // var date;
-            
-            // new ExifImage({ image : imagesPath + file }, function (error, exifData) {
-            //     if (!error) {
-            //         date = exifData.image.ModifyDate.replace(' ', '_');
-            // s('Zapisuje w ' + whereToSave + file);
-
             fs.createReadStream(imagesPath + file).pipe(fs.createWriteStream(whereToSave + file));
             pace.op();
 
-            //     }
-            // });
         });
 
-        s('Kopiowanie zakończone');
+        s('Copying finished');
 
     }
 }
+
+/*  Stackoverflow below :)  */
 
 function formatBytes(bytes,decimals) {
    if(bytes == 0) return '0 Byte';
